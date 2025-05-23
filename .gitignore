@@ -1,0 +1,111 @@
+# Terraform files
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+.terraform/
+.terraform.lock.hcl
+tfplan
+*.tfplan
+
+# AWS Lambda deployment packages
+*.zip
+ts-lambda.zip
+py-lambda.zip
+mental-insights-lambda.zip
+py-lambda-fixed.zip
+py-lambda-updated.zip
+
+# Build directories
+*-build/
+dist/
+build/
+
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+.npm
+.node_repl_history
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.venv
+pip-log.txt
+pip-delete-this-directory.txt
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+logs/
+*.log.*
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+.aws/
+credentials
+config
+
+# Temporary files
+*.tmp
+*.temp
+temp/
+tmp/
+
+# Coverage reports
+coverage/
+*.cover
+.nyc_output
+.coverage
+htmlcov/
+
+# Documentation build
+_site/
+.sass-cache/
+.jekyll-cache/
+.jekyll-metadata
+
+# Database files (in the event local DBs are used)
+*.db
+*.sqlite
+*.sqlite3
+
+# Backup files
+*.bak
+*.orig
+*.rej
+
+# SAM build artifacts (Used Terraform instead)
+.aws-sam/
+samconfig.toml
