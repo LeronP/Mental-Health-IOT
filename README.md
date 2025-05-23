@@ -16,6 +16,18 @@ This project analyzes university mental health IoT data and deploys insights via
 - **CloudWatch**: Logging and monitoring
 - **Terraform**: Infrastructure as Code
 
+```
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   API Gateway   │────│  Lambda Functions │────│    DynamoDB     │
+│                 │    │                  │    │                 │
+│ • /mental-      │    │ • Mental Insights│    │ • User Events   │
+│   insights      │    │ • TypeScript User│    │ • Daily Insights│
+│ • /daily-       │    │ • Python User    │    │                 │
+│   insights      │    │                  │    │                 │
+│ • /user         │    │                  │    │                 │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+```
+
 ### Lambda Functions
 1. **Mental Insights Lambda** (Node.js): Statistical analysis endpoint
 2. **TypeScript Lambda** (Node.js): User creation with PostgreSQL integration
@@ -122,6 +134,28 @@ terraform init
 terraform plan -out=tfplan  
 terraform apply tfplan
 ```
+## Troubleshooting
+
+### Potential Issues
+**Terraform Permission Errors:**
+```bash
+aws sts get-caller-identity  # Verify AWS credentials
+```
+
+**Lambda Function Errors:**
+```bash
+aws logs filter-log-events --log-group-name "/aws/lambda/mental-health-iot-py-lambda"
+```
+
+**API Gateway 502 Errors:**
+- Check Lambda function permissions
+- Verify API Gateway integration configuration
+- Review CloudWatch logs for detailed error messages
+
+### Clean Up Resources
+```bash
+terraform destroy -auto-approve
+```
 
 ## API Endpoints
 
@@ -131,9 +165,14 @@ terraform apply tfplan
 ```bash
 # Get statistical analysis and stress indicators
 GET /mental-insights
-```
 
-**Response Format:**
+# Get comprehensive summary statistics
+GET /summary-stats
+
+# Get visualization-ready data (charts, graphs, heatmaps)
+GET /visualizations
+```
+**Mental Insights Response:**
 ```json
 {
   "top_stress_features": ["mental_health_status", "air_quality_index", "sleep_hours"],
@@ -141,11 +180,6 @@ GET /mental-insights
     "mental_health_status": 0.8253,
     "air_quality_index": 0.5616,
     "sleep_hours": -0.4435
-  },
-  "dataset_summary": {
-    "total_records": 1000,
-    "avg_stress_level": 39.09,
-    "high_stress_count": 210
   },
   "recommendations": {
     "mental_health_status": "Monitor mental health status closely...",
@@ -155,7 +189,53 @@ GET /mental-insights
 }
 ```
 
-### Daily Insights Management
+**Summary Statistics Response:**
+```json
+{
+  "summary_statistics": {
+    "stress_level_stats": {
+      "mean": 39.09,
+      "median": 39.0,
+      "std_deviation": 18.52,
+      "distribution": {
+        "low_stress": {"count": 580, "percentage": 58.0},
+        "moderate_stress": {"count": 210, "percentage": 21.0},
+        "high_stress": {"count": 210, "percentage": 21.0}
+      }
+    },
+    "environmental_stats": {
+      "air_quality_index": {"mean": 85.45, "median": 86.0},
+      "sleep_hours": {"mean": 6.42, "below_recommended": 65.0}
+    }
+  }
+}
+```
+
+**Visualization Data Response:**
+```json
+{
+  "visualizations": {
+    "correlation_heatmap": {
+      "features": ["mental_health_status", "air_quality_index", "sleep_hours"],
+      "correlations": [0.8253, 0.5616, -0.4435]
+    },
+    "stress_distribution": {
+      "bins": [
+        {"range": "1-10", "count": 58, "percentage": 5.8},
+        {"range": "31-40", "count": 204, "percentage": 20.4}
+      ]
+    },
+    "feature_importance": {
+      "data": [
+        {"feature": "Mental Health Status", "correlation": 0.8253, "importance": "Critical"},
+        {"feature": "Air Quality Index", "correlation": 0.5616, "importance": "High"}
+      ]
+    }
+  }
+}
+```
+
+### Managing Daily Insights 
 ```bash
 # Get daily stress patterns
 GET /daily-insights?date=2024-05-22
@@ -165,6 +245,33 @@ POST /daily-insights
 Content-Type: application/json
 {"date": "2024-05-22"}
 ```
+
+## Example API Usage
+
+### Get Complete Analysis Suite
+```bash
+# Statistical analysis with correlations and recommendations
+curl https://your-api-url/dev/mental-insights
+
+# Comprehensive summary statistics for all variables
+curl https://your-api-url/dev/summary-stats  
+
+# Chart-ready visualization data (heatmaps, histograms, scatter plots)
+curl https://your-api-url/dev/visualizations
+
+# Daily stress patterns and trends
+curl https://your-api-url/dev/daily-insights
+```
+
+### Visualization Data Usage
+The `/visualizations` endpoint provides ready-to-use data for:
+- **Correlation Heatmap**: Feature relationships with stress levels
+- **Stress Distribution**: Histogram showing frequency of stress levels
+- **Feature Importance**: Bar chart of top predictors
+- **Environmental Trends**: Scatter plots showing variable relationships
+
+This was designed for integration with Chart.js, D3.js, or other popular visualization libraries.
+
 
 ### User Management (Legacy from Original SAM Template)
 ```bash
