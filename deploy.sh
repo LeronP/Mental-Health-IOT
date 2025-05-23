@@ -243,12 +243,6 @@ main() {
     
     echo ""
     print_status "🎉 Deployment completed successfully!"
-    echo ""
-    print_status "Next steps:"
-    echo "  1. Test the API endpoints listed above"
-    echo "  2. Review the mental health insights data"
-    echo "  3. Set up monitoring and alerting"
-    echo "  4. Configure daily insight storage automation"
 }
 
 # Cleanup function

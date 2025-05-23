@@ -140,7 +140,9 @@ resource "aws_api_gateway_deployment" "api_deployment" {
     aws_api_gateway_integration.post_user_integration,
     aws_api_gateway_integration.post_user_python_integration,
     aws_api_gateway_integration.get_mental_insights_integration,
-    aws_api_gateway_integration.get_daily_insights_integration
+    aws_api_gateway_integration.get_daily_insights_integration,
+    aws_api_gateway_integration.get_visualizations_integration,
+    aws_api_gateway_integration.get_summary_stats_integration
   ]
 
   rest_api_id = aws_api_gateway_rest_api.mental_health_api.id
@@ -308,7 +310,53 @@ resource "aws_api_gateway_integration" "get_mental_insights_integration" {
   uri                    = aws_lambda_function.mental_insights_lambda.invoke_arn
 }
 
-# /daily-insights resource
+# /visualizations resource
+resource "aws_api_gateway_resource" "visualizations_resource" {
+  rest_api_id = aws_api_gateway_rest_api.mental_health_api.id
+  parent_id   = aws_api_gateway_rest_api.mental_health_api.root_resource_id
+  path_part   = "visualizations"
+}
+
+resource "aws_api_gateway_method" "get_visualizations" {
+  rest_api_id   = aws_api_gateway_rest_api.mental_health_api.id
+  resource_id   = aws_api_gateway_resource.visualizations_resource.id
+  http_method   = "GET"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_integration" "get_visualizations_integration" {
+  rest_api_id = aws_api_gateway_rest_api.mental_health_api.id
+  resource_id = aws_api_gateway_resource.visualizations_resource.id
+  http_method = aws_api_gateway_method.get_visualizations.http_method
+
+  integration_http_method = "POST"
+  type                   = "AWS_PROXY"
+  uri                    = aws_lambda_function.mental_insights_lambda.invoke_arn
+}
+
+# /summary-stats resource
+resource "aws_api_gateway_resource" "summary_stats_resource" {
+  rest_api_id = aws_api_gateway_rest_api.mental_health_api.id
+  parent_id   = aws_api_gateway_rest_api.mental_health_api.root_resource_id
+  path_part   = "summary-stats"
+}
+
+resource "aws_api_gateway_method" "get_summary_stats" {
+  rest_api_id   = aws_api_gateway_rest_api.mental_health_api.id
+  resource_id   = aws_api_gateway_resource.summary_stats_resource.id
+  http_method   = "GET"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_integration" "get_summary_stats_integration" {
+  rest_api_id = aws_api_gateway_rest_api.mental_health_api.id
+  resource_id = aws_api_gateway_resource.summary_stats_resource.id
+  http_method = aws_api_gateway_method.get_summary_stats.http_method
+
+  integration_http_method = "POST"
+  type                   = "AWS_PROXY"
+  uri                    = aws_lambda_function.mental_insights_lambda.invoke_arn
+}
 resource "aws_api_gateway_resource" "daily_insights_resource" {
   rest_api_id = aws_api_gateway_rest_api.mental_health_api.id
   parent_id   = aws_api_gateway_rest_api.mental_health_api.root_resource_id
