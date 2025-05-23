@@ -18,7 +18,7 @@ This project analyzes university mental health IoT data and deploys insights via
 
 ```
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   API Gateway   │────│  Lambda Functions │────│    DynamoDB     │
+│   API Gateway   │────│  Lambda Functions│────│    DynamoDB     │
 │                 │    │                  │    │                 │
 │ • /mental-      │    │ • Mental Insights│    │ • User Events   │
 │   insights      │    │ • TypeScript User│    │ • Daily Insights│
